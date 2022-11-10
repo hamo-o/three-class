@@ -23,14 +23,14 @@ const camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
 camera.position.set(0, 0, 3)
 camera.lookAt(new THREE.Vector3(0, 0, 0))
 
-// OrbitControls 추가
-// const controls = new OrbitControls(camera, renderer.domElement)
-// controls.update()
-
 // 렌더러
 const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true })
 renderer.setSize(window.innerWidth, window.innerHeight)
 document.body.appendChild(renderer.domElement)
+
+//OrbitControls 추가
+const controls = new OrbitControls(camera, renderer.domElement)
+controls.update()
 
 // 빛
 const pointLight = new THREE.PointLight(0xffffff, 1)
@@ -84,7 +84,7 @@ scene.add(obj05)
 // scene.add(plane)
 
 // 렌더링 루프
-function render(time) {
+function rotate(time) {
   time *= 0.0005
 
   obj01.rotation.x = time
@@ -104,17 +104,23 @@ function render(time) {
 
   renderer.render(scene, camera)
 
-  requestAnimationFrame(render)
+  requestAnimationFrame(rotate)
 }
+// requestAnimationFrame(render)
 
-requestAnimationFrame(render)
-
-// function animate() {
-//   requestAnimationFrame(animate)
-//   controls.update()
+// 일반 렌더링
+// function render(time) {
 //   renderer.render(scene, camera)
 // }
-// animate()
+// requestAnimationFrame(render)
+
+// OrbitControl 쓸 때!
+function animate() {
+  requestAnimationFrame(animate)
+  controls.update()
+  renderer.render(scene, camera)
+}
+animate()
 
 // 반응형 처리
 function onWindowResize() {
@@ -124,3 +130,11 @@ function onWindowResize() {
 }
 
 window.addEventListener('resize', onWindowResize)
+
+// 클릭이벤트
+
+function onDblClickRotate() {
+  requestAnimationFrame(rotate)
+}
+
+window.addEventListener('dblclick', onDblClickRotate)
