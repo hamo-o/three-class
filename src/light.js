@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { WEBGL } from './webgl'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
+import { DirectionalLight, PointLight } from 'three'
 
 // 장면
 const scene = new THREE.Scene()
@@ -20,6 +21,7 @@ camera.position.z = 3
 const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true })
 renderer.setSize(window.innerWidth, window.innerHeight)
 document.body.appendChild(renderer.domElement)
+renderer.shadowMap.enabled = true
 
 //OrbitControls 추가
 const controls = new OrbitControls(camera, renderer.domElement)
@@ -27,14 +29,14 @@ controls.update()
 
 // 빛
 
-// const ambientLight = new THREE.AmbientLight(0xffffff, 0.2)
-// scene.add(ambientLight)
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
+scene.add(ambientLight)
 
-// const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5)
-// directionalLight.position.set(1, 1, 1)
-// const dlHelper = new THREE.DirectionalLightHelper(directionalLight, 0.5)
-// scene.add(directionalLight)
-// scene.add(dlHelper)
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5)
+directionalLight.position.set(-1.5, 2, 1)
+const dlHelper = new THREE.DirectionalLightHelper(directionalLight, 0.5)
+scene.add(directionalLight)
+scene.add(dlHelper)
 
 // const hemisphereLight = new THREE.HemisphereLight(0x0000ff, 0xff0000, 1)
 // scene.add(hemisphereLight)
@@ -48,13 +50,13 @@ controls.update()
 // rectLight.lookAt(0, 0, 0)
 // scene.add(rectLight)
 
-const spotLight = new THREE.SpotLight(0xffffff, 0.5)
-scene.add(spotLight)
+// const spotLight = new THREE.SpotLight(0xffffff, 0.5)
+// scene.add(spotLight)
 
 // 매쉬
 const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5)
 const material01 = new THREE.MeshStandardMaterial({
-  color: 0xffffff,
+  color: 0xff00ff,
 })
 const cube = new THREE.Mesh(geometry, material01)
 cube.position.y = 0.5
@@ -67,6 +69,24 @@ const plane = new THREE.Mesh(planeGeometry, planeMaterial)
 plane.rotation.x = -0.5 * Math.PI
 plane.position.y = -0.2
 scene.add(plane)
+
+// 그림자
+
+// 그림자를 주는 도형
+cube.castShadow = true
+
+// 그림자가 비춰지는 도형
+plane.receiveShadow = true
+
+// 어떤 빛의 그림자?
+directionalLight.castShadow = true
+
+// 그림자 해상도
+directionalLight.shadow.mapSize.width = 1024
+directionalLight.shadow.mapSize.height = 1024
+
+// 그림자 블러
+directionalLight.shadow.radius = 3
 
 // 렌더링 루프
 function rotate(time) {
