@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { WEBGL } from './webgl'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 
 // 장면
 const scene = new THREE.Scene()
